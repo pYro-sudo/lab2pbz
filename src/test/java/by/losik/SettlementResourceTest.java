@@ -240,7 +240,6 @@ class SettlementResourceTest {
     @Test
     @TestSecurity(user = "testUser", roles = {"user"})
     void testCreateSettlement_Success() {
-        Settlement newSettlement = createTestSettlement(null, "New Settlement", 1L);
         Settlement savedSettlement = createTestSettlement(1L, "New Settlement", 1L);
 
         when(settlementService.existsByNameAndRegionId("New Settlement", 1L))
@@ -563,4 +562,5 @@ class SettlementResourceTest {
                 .statusCode(500)
                 .body(containsString("Error retrieving settlement"));
     }
+
 }
