@@ -40,7 +40,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testGetAllSettlements_Success() {
         List<Settlement> settlements = Arrays.asList(
                 createTestSettlement(1L, "Minsk", 1L),
@@ -61,7 +61,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testGetSettlementById_Success() {
         Settlement settlement = createTestSettlement(1L, "Minsk", 1L);
 
@@ -78,7 +78,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testGetSettlementById_NotFound() {
         when(settlementService.findById(999L))
                 .thenReturn(Uni.createFrom().item((Settlement) null));
@@ -92,7 +92,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testGetSettlementsByRegion_Success() {
         List<Settlement> settlements = Arrays.asList(
                 createTestSettlement(1L, "Minsk", 1L),
@@ -113,7 +113,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testSearchSettlements_Success() {
         List<Settlement> settlements = Arrays.asList(
                 createTestSettlement(1L, "Minsk", 1L),
@@ -132,7 +132,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testSearchSettlements_EmptyTerm() {
         given()
                 .when()
@@ -143,7 +143,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testGetSettlementsByNameContaining_Success() {
         List<Settlement> settlements = Arrays.asList(
                 createTestSettlement(1L, "Gomel", 2L),
@@ -162,7 +162,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testGetSettlementsByRegionAndName_Success() {
         List<Settlement> settlements = Collections.singletonList(
                 createTestSettlement(1L, "Minsk", 1L)
@@ -181,7 +181,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testGetSettlementsWithoutInvoices_Success() {
         List<Settlement> settlements = Arrays.asList(
                 createTestSettlement(1L, "Village1", 3L),
@@ -200,7 +200,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testGetSettlementsWithInvoices_Success() {
         List<Settlement> settlements = Arrays.asList(
                 createTestSettlement(1L, "Minsk", 1L),
@@ -219,7 +219,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testGetMostActiveSettlements_Success() {
         List<Settlement> settlements = Arrays.asList(
                 createTestSettlement(1L, "Minsk", 1L),
@@ -238,7 +238,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testCreateSettlement_Success() {
         Settlement savedSettlement = createTestSettlement(1L, "New Settlement", 1L);
 
@@ -259,7 +259,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testCreateSettlement_MissingName() {
         given()
                 .contentType(ContentType.JSON)
@@ -272,7 +272,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testCreateSettlement_MissingRegion() {
         given()
                 .contentType(ContentType.JSON)
@@ -285,7 +285,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testCreateSettlement_AlreadyExists() {
         when(settlementService.existsByNameAndRegionId("Existing Settlement", 1L))
                 .thenReturn(Uni.createFrom().item(true));
@@ -301,7 +301,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testUpdateSettlement_Success() {
         Settlement updatedSettlement = createTestSettlement(1L, "Updated Settlement", 1L);
 
@@ -320,7 +320,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testUpdateSettlement_IdMismatch() {
         given()
                 .contentType(ContentType.JSON)
@@ -333,7 +333,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testUpdateSettlementName_Success() {
         when(settlementService.updateSettlementName(1L, "New Name"))
                 .thenReturn(Uni.createFrom().item(1));
@@ -349,7 +349,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testUpdateSettlementName_EmptyName() {
         given()
                 .contentType(ContentType.TEXT)
@@ -362,7 +362,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testUpdateSettlementName_NotFound() {
         when(settlementService.updateSettlementName(999L, "New Name"))
                 .thenReturn(Uni.createFrom().item(0));
@@ -378,7 +378,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testUpdateSettlementRegion_Success() {
         when(settlementService.updateSettlementRegion(1L, 2L))
                 .thenReturn(Uni.createFrom().item(1));
@@ -394,7 +394,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testUpdateSettlementRegion_NullRegionId() {
         given()
                 .contentType(ContentType.TEXT)
@@ -407,7 +407,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testTransferSettlementsToRegion_Success() {
         when(settlementService.transferSettlementsToRegion(1L, 2L))
                 .thenReturn(Uni.createFrom().item(5));
@@ -421,7 +421,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testTransferSettlementsToRegion_MissingParameters() {
         given()
                 .when()
@@ -432,7 +432,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testTransferSettlementsToRegion_SameRegion() {
         given()
                 .when()
@@ -443,7 +443,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testDeleteSettlement_Success() {
         when(settlementService.deleteById(1L))
                 .thenReturn(Uni.createFrom().item(true));
@@ -456,7 +456,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testDeleteSettlement_NotFound() {
         when(settlementService.deleteById(999L))
                 .thenReturn(Uni.createFrom().item(false));
@@ -470,7 +470,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testDeleteSettlementsByRegion_Success() {
         when(settlementService.deleteByRegionId(1L))
                 .thenReturn(Uni.createFrom().item(3L));
@@ -484,7 +484,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testGetSettlementCountByRegion_Success() {
         when(settlementService.countByRegionId(1L))
                 .thenReturn(Uni.createFrom().item(10L));
@@ -498,7 +498,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testGetSettlementInvoiceStats_Success() {
         List<Object[]> stats = Arrays.asList(
                 new Object[]{1L, "Minsk", 5L},
@@ -516,7 +516,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testCheckSettlementExistsByNameAndRegion_Success() {
         when(settlementService.existsByNameAndRegionId("Minsk", 1L))
                 .thenReturn(Uni.createFrom().item(true));
@@ -530,7 +530,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testCheckSettlementExistsByNameAndRegion_MissingParameters() {
         given()
                 .when()
@@ -550,7 +550,7 @@ class SettlementResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "testUser", roles = {"user"})
+    @TestSecurity(user = "admin", roles = {"user"})
     void testServiceErrorHandling() {
         when(settlementService.findById(1L))
                 .thenReturn(Uni.createFrom().failure(new RuntimeException("Database error")));
@@ -562,5 +562,4 @@ class SettlementResourceTest {
                 .statusCode(500)
                 .body(containsString("Error retrieving settlement"));
     }
-
 }
