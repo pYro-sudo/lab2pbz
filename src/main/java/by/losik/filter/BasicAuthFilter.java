@@ -23,7 +23,12 @@ public class BasicAuthFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) {
         String path = requestContext.getUriInfo().getPath();
-        if (path.startsWith("q/health") || path.startsWith("metrics")) {
+        if (path.startsWith("q/health") ||
+                path.startsWith("metrics") ||
+                path.startsWith("q/swagger-ui") ||
+                path.startsWith("swagger-ui") ||
+                path.equals("openapi") ||
+                path.startsWith("openapi/")) {
             return;
         }
 
