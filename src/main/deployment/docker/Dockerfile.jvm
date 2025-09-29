@@ -1,0 +1,18 @@
+FROM quay.io/quarkus/quarkus-distroless-image:2.0 as builder
+WORKDIR /project
+COPY . .
+RUN ./mvnw clean package -Dquarkus.package.type=jar -DskipTests
+
+FROM quay.io/quarkus/quarkus-distroless-image:2.0
+WORKDIR /work/
+COPY --from=builder /project/target/quarkus-app/lib/ /work/lib/
+COPY --from=builder /project/target/quarkus-app/*.jar /work/
+COPY --from=builder /project/target/quarkus-app/app/ /work/app/
+COPY --from=builder /project/target/quarkus-app/quarkus/ /work/quarkus/
+
+ENV APP_AUTH_USERNAME=admin
+ENV APP_AUTH_PASSWORD=password
+ENV JAVA_OPTS="-Djava.awt.headless=true -Dfile.encoding=UTF-8"
+
+EXPOSE 8080
+CMD ["java", "-jar", "quarkus-run.jar"]

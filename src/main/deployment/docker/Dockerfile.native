@@ -1,0 +1,16 @@
+FROM quay.io/quarkus/quarkus-micro-image:2.0 as build
+WORKDIR /project
+COPY . .
+RUN ./mvnw package -Dnative -DskipTests
+
+FROM quay.io/quarkus/quarkus-distroless-image:2.0
+WORKDIR /work/
+
+COPY --from=build /project/target/*-runner /work/application
+
+ENV APP_AUTH_USERNAME=admin
+ENV APP_AUTH_PASSWORD=password
+
+EXPOSE 8080
+
+CMD ["./application", "-Dquarkus.http.host=0.0.0.0"]
