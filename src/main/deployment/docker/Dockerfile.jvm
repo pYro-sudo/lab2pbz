@@ -1,18 +1,22 @@
-FROM quay.io/quarkus/quarkus-distroless-image:2.0 as builder
-WORKDIR /project
-COPY . .
-RUN ./mvnw clean package -Dquarkus.package.type=jar -DskipTests
+FROM registry.access.redhat.com/ubi9/openjdk-21:1.23
 
-FROM quay.io/quarkus/quarkus-distroless-image:2.0
-WORKDIR /work/
-COPY --from=builder /project/target/quarkus-app/lib/ /work/lib/
-COPY --from=builder /project/target/quarkus-app/*.jar /work/
-COPY --from=builder /project/target/quarkus-app/app/ /work/app/
-COPY --from=builder /project/target/quarkus-app/quarkus/ /work/quarkus/
+ENV LANGUAGE='en_US:en'
+
+USER root
+RUN mkdir -p /deployments && chown 185:0 /deployments
+COPY --chown=185:0 target/quarkus-app/lib/ /deployments/lib/
+COPY --chown=185:0 target/quarkus-app/*.jar /deployments/
+COPY --chown=185:0 target/quarkus-app/app/ /deployments/app/
+COPY --chown=185:0 target/quarkus-app/quarkus/ /deployments/quarkus/
+
+EXPOSE 8080
+USER 185
+
+ENV JAVA_OPTS_APPEND="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
+ENV JAVA_APP_JAR="/deployments/quarkus-run.jar"
+ENV JAVA_LIB_DIR="/deployments/lib"
 
 ENV APP_AUTH_USERNAME=admin
 ENV APP_AUTH_PASSWORD=password
-ENV JAVA_OPTS="-Djava.awt.headless=true -Dfile.encoding=UTF-8"
 
-EXPOSE 8080
-CMD ["java", "-jar", "quarkus-run.jar"]
+CMD ["java", "-jar", "/deployments/quarkus-run.jar"]
