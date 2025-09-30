@@ -39,6 +39,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: quarkus-app-service
+                name: quarkus-service
                 port:
                   number: 80
