@@ -1,0 +1,534 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <!-- Create schema -->
+    <changeSet id="1" author="lab_user">
+        <sql>
+            CREATE SCHEMA IF NOT EXISTS lab2var10;
+            GRANT USAGE ON SCHEMA lab2var10 TO lab_user;
+            GRANT ALL ON SCHEMA lab2var10 TO lab_user;
+        </sql>
+    </changeSet>
+
+    <!-- Create categories table -->
+    <changeSet id="2" author="lab_user">
+        <createTable tableName="categories" schemaName="lab2var10">
+            <column name="id" type="SERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Create products table -->
+    <changeSet id="3" author="lab_user">
+        <createTable tableName="products" schemaName="lab2var10">
+            <column name="id" type="SERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="code" type="VARCHAR(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="manufacturer" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableSchemaName="lab2var10"
+                baseTableName="products"
+                baseColumnNames="category_id"
+                constraintName="fk_products_category"
+                referencedTableSchemaName="lab2var10"
+                referencedTableName="categories"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <!-- Create customers table -->
+    <changeSet id="4" author="lab_user">
+        <createTable tableName="customers" schemaName="lab2var10">
+            <column name="id" type="SERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address" type="VARCHAR(300)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_legal_entity" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="document_number" type="VARCHAR(100)"/>
+            <column name="document_series" type="VARCHAR(50)"/>
+            <column name="bank_name" type="VARCHAR(200)"/>
+            <column name="bank_account" type="VARCHAR(100)"/>
+        </createTable>
+    </changeSet>
+
+    <!-- Create regions table -->
+    <changeSet id="5" author="lab_user">
+        <createTable tableName="regions" schemaName="lab2var10">
+            <column name="id" type="SERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="country" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Create settlements table -->
+    <changeSet id="6" author="lab_user">
+        <createTable tableName="settlements" schemaName="lab2var10">
+            <column name="id" type="SERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="region_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableSchemaName="lab2var10"
+                baseTableName="settlements"
+                baseColumnNames="region_id"
+                constraintName="fk_settlements_region"
+                referencedTableSchemaName="lab2var10"
+                referencedTableName="regions"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <!-- Create invoices table -->
+    <changeSet id="7" author="lab_user">
+        <createTable tableName="invoices" schemaName="lab2var10">
+            <column name="id" type="SERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="invoice_date" type="DATE">
+                <constraints nullable="false" checkConstraint="invoice_date &lt;&#61; CURRENT_DATE"/>
+            </column>
+            <column name="customer_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="settlement_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_amount" type="DECIMAL(15,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="enterprise" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableSchemaName="lab2var10"
+                baseTableName="invoices"
+                baseColumnNames="customer_id"
+                constraintName="fk_invoices_customer"
+                referencedTableSchemaName="lab2var10"
+                referencedTableName="customers"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableSchemaName="lab2var10"
+                baseTableName="invoices"
+                baseColumnNames="settlement_id"
+                constraintName="fk_invoices_settlement"
+                referencedTableSchemaName="lab2var10"
+                referencedTableName="settlements"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <!-- Create invoice_items table -->
+    <changeSet id="8" author="lab_user">
+        <createTable tableName="invoice_items" schemaName="lab2var10">
+            <column name="id" type="SERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="invoice_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity" type="INTEGER">
+                <constraints nullable="false" checkConstraint="quantity >= 0"/>
+            </column>
+            <column name="price" type="DECIMAL(15,2)">
+                <constraints nullable="false" checkConstraint="price >= 0"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableSchemaName="lab2var10"
+                baseTableName="invoice_items"
+                baseColumnNames="invoice_id"
+                constraintName="fk_invoice_items_invoice"
+                referencedTableSchemaName="lab2var10"
+                referencedTableName="invoices"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableSchemaName="lab2var10"
+                baseTableName="invoice_items"
+                baseColumnNames="product_id"
+                constraintName="fk_invoice_items_product"
+                referencedTableSchemaName="lab2var10"
+                referencedTableName="products"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <!-- Create price_history table -->
+    <changeSet id="9" author="lab_user">
+        <createTable tableName="price_history" schemaName="lab2var10">
+            <column name="id" type="SERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="product_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="change_date" type="DATE">
+                <constraints nullable="false" checkConstraint="change_date &lt;&#61; CURRENT_DATE"/>
+            </column>
+            <column name="price" type="DECIMAL(15,2)">
+                <constraints nullable="false" checkConstraint="price > 0"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableSchemaName="lab2var10"
+                baseTableName="price_history"
+                baseColumnNames="product_id"
+                constraintName="fk_price_history_product"
+                referencedTableSchemaName="lab2var10"
+                referencedTableName="products"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <!-- Create indexes -->
+    <changeSet id="10" author="lab_user">
+        <createIndex indexName="idx_products_category" schemaName="lab2var10" tableName="products">
+            <column name="category_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_products_code" schemaName="lab2var10" tableName="products">
+            <column name="code"/>
+        </createIndex>
+
+        <createIndex indexName="idx_customers_legal" schemaName="lab2var10" tableName="customers">
+            <column name="is_legal_entity"/>
+        </createIndex>
+
+        <createIndex indexName="idx_customers_name" schemaName="lab2var10" tableName="customers">
+            <column name="name"/>
+        </createIndex>
+
+        <createIndex indexName="idx_regions_country" schemaName="lab2var10" tableName="regions">
+            <column name="country"/>
+        </createIndex>
+
+        <createIndex indexName="idx_settlements_region" schemaName="lab2var10" tableName="settlements">
+            <column name="region_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_invoices_date" schemaName="lab2var10" tableName="invoices">
+            <column name="invoice_date"/>
+        </createIndex>
+
+        <createIndex indexName="idx_invoices_customer" schemaName="lab2var10" tableName="invoices">
+            <column name="customer_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_invoices_settlement" schemaName="lab2var10" tableName="invoices">
+            <column name="settlement_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_invoice_items_invoice" schemaName="lab2var10" tableName="invoice_items">
+            <column name="invoice_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_invoice_items_product" schemaName="lab2var10" tableName="invoice_items">
+            <column name="product_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_price_history_product" schemaName="lab2var10" tableName="price_history">
+            <column name="product_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_price_history_date" schemaName="lab2var10" tableName="price_history">
+            <column name="change_date"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- Create functions -->
+    <changeSet id="11" author="lab_user">
+        <sql>
+            CREATE OR REPLACE FUNCTION lab2var10.add_product(
+                p_code varchar,
+                p_name varchar,
+                p_category_id integer,
+                p_manufacturer varchar
+            ) RETURNS void
+            AS $$
+            BEGIN
+            INSERT INTO lab2var10.products (code, name, category_id, manufacturer)
+            VALUES (p_code, p_name, p_category_id, p_manufacturer)
+                ON CONFLICT (code) DO UPDATE SET
+                name = excluded.name,
+                                          category_id = excluded.category_id,
+                                          manufacturer = excluded.manufacturer;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            CREATE OR REPLACE FUNCTION lab2var10.update_product(
+                p_id integer,
+                p_code varchar,
+                p_name varchar,
+                p_category_id integer,
+                p_manufacturer varchar
+            ) RETURNS void
+            AS $$
+            BEGIN
+            UPDATE lab2var10.products
+            SET code = p_code,
+                name = p_name,
+                category_id = p_category_id,
+                manufacturer = p_manufacturer
+            WHERE id = p_id;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            CREATE OR REPLACE FUNCTION lab2var10.delete_product(p_id integer) RETURNS void AS $$
+            BEGIN
+            DELETE FROM lab2var10.products WHERE id = p_id;
+            END;
+            $$ LANGUAGE plpgsql;
+        </sql>
+    </changeSet>
+
+    <changeSet id="12" author="lab_user">
+        <sql>
+            CREATE OR REPLACE FUNCTION lab2var10.add_invoice(
+                p_invoice_date date,
+                p_customer_id integer,
+                p_settlement_id integer,
+                p_total_amount decimal,
+                p_enterprise varchar
+            ) RETURNS integer
+            AS $$
+            DECLARE
+            new_id integer;
+            BEGIN
+            INSERT INTO lab2var10.invoices (invoice_date, customer_id, settlement_id, total_amount, enterprise)
+            VALUES (p_invoice_date, p_customer_id, p_settlement_id, p_total_amount, p_enterprise)
+                RETURNING id INTO new_id;
+
+            RETURN new_id;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            CREATE OR REPLACE FUNCTION lab2var10.update_invoice(
+                p_id integer,
+                p_invoice_date date,
+                p_customer_id integer,
+                p_settlement_id integer,
+                p_total_amount decimal,
+                p_enterprise varchar
+            ) RETURNS void
+            AS $$
+            BEGIN
+            UPDATE lab2var10.invoices
+            SET invoice_date = p_invoice_date,
+                customer_id = p_customer_id,
+                settlement_id = p_settlement_id,
+                total_amount = p_total_amount,
+                enterprise = p_enterprise
+            WHERE id = p_id;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            CREATE OR REPLACE FUNCTION lab2var10.delete_invoice(p_id integer) RETURNS void AS $$
+            BEGIN
+            DELETE FROM lab2var10.invoices WHERE id = p_id;
+            END;
+            $$ LANGUAGE plpgsql;
+        </sql>
+    </changeSet>
+
+    <changeSet id="13" author="lab_user">
+        <sql>
+            CREATE OR REPLACE FUNCTION lab2var10.get_max_purchase_customers(p_date date)
+                RETURNS TABLE (
+                    date_ date,
+                    customer_name varchar,
+                    address varchar,
+                    purchase_sum decimal
+                )
+            AS $$
+            BEGIN
+            RETURN QUERY
+            SELECT
+                i.invoice_date as date_,
+                c.name as customer_name,
+                c.address as address,
+                i.total_amount as purchase_sum
+            FROM lab2var10.invoices i
+                     JOIN lab2var10.customers c ON i.customer_id = c.id
+            WHERE i.invoice_date = p_date
+              AND i.total_amount = (
+                SELECT max(total_amount)
+                FROM lab2var10.invoices
+                WHERE invoice_date = p_date
+            );
+            END;
+            $$ LANGUAGE plpgsql;
+
+            CREATE OR REPLACE FUNCTION lab2var10.get_price_history(
+                p_product_id integer,
+                p_start_date date,
+                p_end_date date
+                ) RETURNS TABLE (
+                product_name varchar,
+                manufacturer varchar,
+                change_date date,
+                price decimal
+                )
+            AS $$
+            BEGIN
+            RETURN QUERY
+            SELECT
+                p.name as product_name,
+                p.manufacturer as manufacturer,
+                ph.change_date as change_date,
+                ph.price as price
+            FROM lab2var10.price_history ph
+                     JOIN lab2var10.products p ON ph.product_id = p.id
+            WHERE p.id = p_product_id
+              AND ph.change_date BETWEEN p_start_date AND p_end_date
+            ORDER BY ph.change_date;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            CREATE OR REPLACE FUNCTION lab2var10.get_categories()
+                RETURNS TABLE (название_категории varchar)
+            AS $$
+            BEGIN
+            RETURN QUERY
+            SELECT name FROM lab2var10.categories ORDER BY name;
+            END;
+            $$ LANGUAGE plpgsql;
+        </sql>
+    </changeSet>
+
+    <!-- Create triggers -->
+    <changeSet id="14" author="lab_user">
+        <sql>
+            CREATE OR REPLACE FUNCTION lab2var10.update_invoice_total()
+                RETURNS trigger AS $$
+            DECLARE
+            target_invoice_id integer;
+            BEGIN
+                IF tg_op = 'INSERT' THEN
+                    target_invoice_id := NEW.invoice_id;
+                ELSIF tg_op = 'UPDATE' THEN
+                    IF NEW.invoice_id != OLD.invoice_id THEN
+            UPDATE lab2var10.invoices
+            SET total_amount = (
+                SELECT coalesce(sum(quantity * price), 0)
+                FROM lab2var10.invoice_items
+                WHERE invoice_id = OLD.invoice_id
+            )
+            WHERE id = OLD.invoice_id;
+
+            target_invoice_id := NEW.invoice_id;
+            ELSE
+                        target_invoice_id := NEW.invoice_id;
+            END IF;
+                ELSIF tg_op = 'DELETE' THEN
+                    target_invoice_id := OLD.invoice_id;
+            END IF;
+
+            UPDATE lab2var10.invoices
+            SET total_amount = (
+                SELECT coalesce(sum(quantity * price), 0)
+                FROM lab2var10.invoice_items
+                WHERE invoice_id = target_invoice_id
+            )
+            WHERE id = target_invoice_id;
+
+            RETURN coalesce(new, old);
+            END;
+            $$ LANGUAGE plpgsql;
+
+            CREATE TRIGGER trigger_update_invoice_total
+                AFTER INSERT OR UPDATE OR DELETE ON lab2var10.invoice_items
+                FOR EACH ROW EXECUTE FUNCTION lab2var10.update_invoice_total();
+
+            CREATE OR REPLACE FUNCTION lab2var10.record_price_history()
+                RETURNS trigger AS $$
+            BEGIN
+                IF old.price IS DISTINCT FROM new.price THEN
+                    INSERT INTO lab2var10.price_history (product_id, change_date, price)
+                    VALUES (new.product_id, current_date, new.price);
+            END IF;
+            RETURN new;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            CREATE TRIGGER trigger_record_price_history
+                AFTER UPDATE ON lab2var10.invoice_items
+                FOR EACH ROW
+                WHEN (old.price IS DISTINCT FROM new.price)
+            EXECUTE FUNCTION lab2var10.record_price_history();
+        </sql>
+    </changeSet>
+
+    <!-- Insert sample data -->
+    <changeSet id="15" author="lab_user">
+        <sql>
+            INSERT INTO lab2var10.categories (name) VALUES
+                                                        ('электроника'),
+                                                        ('одежда'),
+                                                        ('продукты питания'),
+                                                        ('книги'),
+                                                        ('мебель')
+                ON CONFLICT (name) DO NOTHING;
+
+            INSERT INTO lab2var10.products (code, name, category_id, manufacturer) VALUES
+                                                                                       ('el001', 'смартфон', 1, 'samsung'),
+                                                                                       ('el002', 'ноутбук', 1, 'lenovo'),
+                                                                                       ('cl001', 'футболка', 2, 'nike'),
+                                                                                       ('fd001', 'хлеб', 3, 'хлебзавод №1'),
+                                                                                       ('bk001', 'учебник sql', 4, 'питер')
+                ON CONFLICT (code) DO NOTHING;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
