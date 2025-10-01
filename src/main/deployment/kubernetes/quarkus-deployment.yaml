@@ -34,6 +34,8 @@ spec:
           env:
             - name: QUARKUS_DATASOURCE_REACTIVE_URL
               value: "postgresql://postgres:5432/postgres"
+            - name: QUARKUS_DATASOURCE_JDBC_URL
+              value: "jdbc:postgresql://localhost:5432/postgres"
             - name: QUARKUS_DATASOURCE_USERNAME
               value: "lab_user"
             - name: QUARKUS_DATASOURCE_PASSWORD
@@ -67,4 +69,5 @@ spec:
             initialDelaySeconds: 30
             periodSeconds: 5
             timeoutSeconds: 3
+
             failureThreshold: 3
