@@ -53,4 +53,4 @@ You can then execute your native executable with: `./target/lab2pbzweb-1.0-SNAPS
 
 If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
 
-okay, so to run, you need to first apply Dockerfile in the root of the project, packaging the app via Maven(or gradle, but i gave pom.xml, so gl). Then, apply via kubectl manifests.
+okay, so to run, you need to first apply the Dockerfile in the root of the project, which is located in deployment directory, packaging the app via Maven(or gradle, but i gave pom.xml, so gl). Then, apply via kubectl the manifests.
