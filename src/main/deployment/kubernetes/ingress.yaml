@@ -3,34 +3,22 @@ kind: Ingress
 metadata:
   name: quarkus-app-ingress
   annotations:
-    kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/rewrite-target: /
-
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      add_header X-Frame-Options "SAMEORIGIN" always;
-      add_header X-Content-Type-Options "nosniff" always;
-      add_header Referrer-Policy "strict-origin-when-cross-origin" always;
-      add_header Permissions-Policy "geolocation=(), microphone=(), camera=()";
-      add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;";
-
-    nginx.ingress.kubernetes.io/limit-rps: "100"
-    nginx.ingress.kubernetes.io/limit-burst-multiplier: "2"
-
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "5"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "15"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "15"
-
-    nginx.ingress.kubernetes.io/proxy-buffer-size: "4k"
-    nginx.ingress.kubernetes.io/proxy-buffers-number: "8"
-    nginx.ingress.kubernetes.io/proxy-buffers-size: "16k"
-
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
-
     nginx.ingress.kubernetes.io/enable-cors: "true"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, PUT, POST, DELETE, PATCH, OPTIONS"
     nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization"
+    nginx.ingress.kubernetes.io/limit-rps: "100"
+    nginx.ingress.kubernetes.io/limit-burst-multiplier: "2"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "5"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "15"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "15"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "4k"
+    nginx.ingress.kubernetes.io/proxy-buffers-number: "8"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+
 spec:
+  ingressClassName: nginx
   rules:
     - host: quarkus-app.example.com
       http:
@@ -42,3 +30,4 @@ spec:
                 name: quarkus-service
                 port:
                   number: 80
+# kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
