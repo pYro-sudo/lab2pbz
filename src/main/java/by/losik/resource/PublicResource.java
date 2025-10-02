@@ -1,5 +1,7 @@
 package by.losik.resource;
 
+import io.micrometer.prometheus.PrometheusMeterRegistry;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -20,6 +22,9 @@ import org.eclipse.microprofile.faulttolerance.Timeout;
 )
 @Bulkhead(value = 50)
 public class PublicResource {
+    
+    @Inject
+    PrometheusMeterRegistry prometheusMeterRegistry;
 
     @GET
     @Path("/health")
@@ -32,6 +37,6 @@ public class PublicResource {
     @Path("/info")
     @Produces(MediaType.APPLICATION_JSON)
     public String info() {
-        return "{\"name\": \"Quarkus Lab API\", \"version\": \"1.0\"}";
+        return prometheusMeterRegistry.scrape();
     }
 }
