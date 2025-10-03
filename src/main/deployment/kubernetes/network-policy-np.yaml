@@ -22,14 +22,23 @@ spec:
                   - ingress-nginx
   egress:
     - ports:
-        - port: 5432
+        - port: 53
+          protocol: UDP
+        - port: 53
           protocol: TCP
-        - port: 6379
-          protocol: TCP
-      to:
+
+    - to:
         - podSelector:
             matchLabels:
               app: postgres
+      ports:
+        - port: 5432
+          protocol: TCP
+
+    - to:
         - podSelector:
             matchLabels:
               app: redis
+      ports:
+        - port: 6379
+          protocol: TCP
