@@ -7,7 +7,6 @@ Basically a CRUD app, that is for managing the company product workflow.
 - Docker
 - Hashicorp Waypoint
 - Java 17+
-- Helm (for nginx)
 
 ## What was used
 - Kubernetes(KinD)
