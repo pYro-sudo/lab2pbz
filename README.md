@@ -1,56 +1,33 @@
 # lab2pbzweb
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+Basically a CRUD app
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+## What you need to deploy
+- Kubernetes(KinD)
+- Docker
+- Hashicorp Waypoint
+- Java 17+
 
-## Running the application in dev mode
+## What was used
+- Kubernetes(KinD)
+- Docker
+- Hashicorp Waypoint
+- Java 17+
+- Maven 3.9+
+- Quarkus 3.24.5+ (but basically better check out pom.xml)
+- Hibernate with Panache
+- Redis
+- PostgreSQL
+- Liquibase
+- Prometheus(but as a dependency for Quarkus, so it is basically built-in, no worries about it)
+- Swagger(well, because i didn't want to do front)
 
-You can run your application in dev mode that enables live coding using:
-
-```shell script
-./mvnw quarkus:dev
+## How to launch
+```shell
+waypoint up
 ```
+but remeber to write in ```hosts``` file the configuration of the app like ```<ip-of-the-app> quarkus-app.example.com```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+## How to check out
 
-## Packaging and running the application
-
-The application can be packaged using:
-
-```shell script
-./mvnw package
-```
-
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
-
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
-
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
-
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
-
-## Creating a native executable
-
-You can create a native executable using:
-
-```shell script
-./mvnw package -Dnative
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
-
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/lab2pbzweb-1.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
-
-okay, so to run, you need to first apply the Dockerfile in the root of the project, which is located in deployment directory, packaging the app via Maven(or gradle, but i gave pom.xml, so gl). Then, apply via kubectl the manifests.
+well, visit ```http://quarkus-app.example.com:8080/swagger-ui```, _but check out the status of kubernetes resources by writing `kubectl get resources && kubectl get resources -n ingress-nginx`_
