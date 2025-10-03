@@ -13,6 +13,7 @@ Basically a CRUD app, that is for managing the company product workflow.
 - Docker
 - Hashicorp Waypoint
 - Helm
+- nginx
 - Java 17+
 - Maven 3.9+
 - Quarkus 3.24.5+ (but basically better check out pom.xml)
