@@ -1,6 +1,6 @@
 # lab2pbzweb
 
-Basically a CRUD app
+Basically a CRUD app, that is for managing the company product workflow.
 
 ## What you need to deploy
 - Kubernetes(KinD)
