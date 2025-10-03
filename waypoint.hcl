@@ -34,7 +34,6 @@ app "quarkus-app" {
         docker pull redis:7.2-alpine
         docker pull liquibase/liquibase:4.18
 
-        # Создаем кластер если нужно
         if ! kind get clusters | grep -q desktop; then
           kind create cluster --name desktop
         fi
@@ -52,35 +51,28 @@ app "quarkus-app" {
     use "exec" {
       command = ["sh", "-c", <<EOT
         echo "Deploying all Kubernetes resources..."
-        
-        # Устанавливаем ingress-nginx если не установлен
+
         if ! kubectl get namespace ingress-nginx > /dev/null 2>&1; then
           kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
-          # Ждем готовности ingress-nginx
           kubectl wait --namespace ingress-nginx \
             --for=condition=ready pod \
             --selector=app.kubernetes.io/component=controller \
             --timeout=90s
         fi
 
-        # Применяем все манифесты
         kubectl apply -f ./src/main/deployment/kubernetes/service-account.yaml
         kubectl apply -f ./src/main/deployment/kubernetes/postgres-deployment.yaml
         kubectl apply -f ./src/main/deployment/kubernetes/redis-deployment.yaml
         
-        # Ждем готовности postgres и redis
         echo "Waiting for postgres and redis to be ready..."
         kubectl wait --for=condition=ready pod -l app=postgres --timeout=120s
         kubectl wait --for=condition=ready pod -l app=redis --timeout=120s
-        
-        # Запускаем миграции
+
         kubectl apply -f ./src/main/deployment/kubernetes/liquibase-job.yaml
-        
-        # Ждем завершения job
+
         echo "Waiting for database migrations to complete..."
         kubectl wait --for=condition=complete job/liquibase-migration --timeout=180s
         
-        # Применяем остальные манифесты
         kubectl apply -f ./src/main/deployment/kubernetes/quarkus-service.yaml
         kubectl apply -f ./src/main/deployment/kubernetes/quarkus-deployment.yaml
         kubectl apply -f ./src/main/deployment/kubernetes/quarkus-hpa.yaml
@@ -91,7 +83,6 @@ app "quarkus-app" {
         echo "All resources deployed successfully!"
         echo "Application will be available at: http://quarkus-app.example.com"
         
-        # Показываем статус
         kubectl get pods,svc,deployments
       EOT
       ]
