@@ -21,6 +21,7 @@ Basically a CRUD app, that is for managing the company product workflow.
 - Liquibase
 - Prometheus(but as a dependency for Quarkus, so it is basically built-in, no worries about it)
 - Swagger(well, because i didn't want to do front)
+- JUnit5 + Mockito
 
 ## How to launch
 ```shell
