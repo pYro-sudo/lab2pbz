@@ -26,7 +26,7 @@ Basically a CRUD app, that is for managing the company product workflow.
 ```shell
 waypoint up
 ```
-but remeber to write in ```hosts``` file the configuration of the app like ```<ip-of-the-app> quarkus-app.example.com```
+but remeber to write in ```hosts``` file the configuration of the app like ```<ip-of-the-ingress> quarkus-app.example.com```
 
 ## How to check out
 
