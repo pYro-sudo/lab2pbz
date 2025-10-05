@@ -30,6 +30,7 @@ app "quarkus-app" {
       when    = "after"
       command = ["sh", "-c", <<EOT
         docker tag waypoint.local/quarkus-app:latest pyrodocker1/quarkus-app:latest
+        # я тегал для своего аккаунта в докере, так что можно просто брать waypoint.local/quarkus-app:latest, но в деплойменте надо поменять образ
         docker pull postgres:14-alpine
         docker pull redis:7.2-alpine
         docker pull liquibase/liquibase:4.18
